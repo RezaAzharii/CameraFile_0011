@@ -23,6 +23,7 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
     on<TapToFocus>(_onTapFocus);
     on<PickImageFromGallery>(_onPickGallery);
     on<OpenCameraAndCapture>(_onOpenCamera);
+    on<DeleteImage>(_onDeleteImage);
   }
 
   Future<void> _onInit(
@@ -122,6 +123,21 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
         snackbarMessage: 'Disimpan: ${saved.path}'
       ));
     }
+  }
+
+  Future<void> _onDeleteImage(
+    DeleteImage event, Emitter<CameraState> emit
+  ) async {
+    if (state is! CameraReady) return;
+    final s = state as CameraReady;
+    await s.imageFile?.delete();
+    emit(CameraReady(
+      controller: s.controller, 
+      selectedIndex: s.selectedIndex, 
+      flashMode: s.flashMode, 
+      imageFile: null, 
+      snackbarMessage: 'Gambar dihapus'
+    ));
   }
 
   Future<void> _setupController(
