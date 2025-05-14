@@ -20,7 +20,37 @@ class HomePage extends StatelessWidget {
               context.read<CameraBloc>().add(ClearSnackbar());
             }
           },
-          builder: 
+          builder: (context, state) {
+            return Column(
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        icon: const Icon(Icons.camera),
+                        label: const Text('Ambil Foto'),
+                        onPressed: () {
+                          final bloc = context.read<CameraBloc>();
+                          if (bloc.state is! CameraReady) {
+                            bloc.add(InitializeCamera());
+                          }
+                          bloc.add(OpenCameraAndCapture(context));
+                        },
+                      ),
+                    ),
+                    ElevatedButton.icon(
+                      icon: const Icon(Icons.folder),
+                      label: const Text('Pilih dari Galeri'),
+                      onPressed:
+                          () => context.read<CameraBloc>().add(
+                            PickImageFromGallery(),
+                          ),
+                    ),
+                  ],
+                ),
+              ],
+            );
+          },
         ),
       ),
     );
