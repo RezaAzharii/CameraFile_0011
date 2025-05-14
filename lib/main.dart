@@ -16,6 +16,7 @@ class MyApp extends StatelessWidget {
       create: (context) => CameraBloc(),
       child: MaterialApp(
         title: 'Flutter Demo',
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         ),
