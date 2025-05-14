@@ -24,6 +24,7 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
     on<PickImageFromGallery>(_onPickGallery);
     on<OpenCameraAndCapture>(_onOpenCamera);
     on<DeleteImage>(_onDeleteImage);
+    on<ClearSnackbar>(_onClearSnackbar);
   }
 
   Future<void> _onInit(
@@ -138,6 +139,14 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
       imageFile: null, 
       snackbarMessage: 'Gambar dihapus'
     ));
+  }
+
+  Future<void> _onClearSnackbar(
+    ClearSnackbar event, Emitter<CameraState> emit
+  ) async {
+    if (state is! CameraReady) return;
+    final s = state as CameraReady;
+    emit(s.copyWith(clearSnackbar: true));
   }
 
   Future<void> _setupController(
