@@ -10,7 +10,19 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Beranda')),
-      body: SafeArea(),
+      body: SafeArea(
+        child: BlocConsumer<CameraBloc, CameraState>(
+          listener: (context, state) {
+            if (state is CameraReady && state.snackbarMessage != null) {
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text(state.snackbarMessage!)));
+              context.read<CameraBloc>().add(ClearSnackbar());
+            }
+          },
+          builder: 
+        ),
+      ),
     );
   }
 }
