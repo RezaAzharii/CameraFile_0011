@@ -19,6 +19,7 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
     on<InitializeCamera>(_onInit);
     on<SwitchCamera>(_onSwitch);
     on<ToggleFlash>(_onToggleFlash);
+    on<TakePicture>(_onTakePicture);
   }
 
   Future<void> _onInit(
@@ -51,6 +52,16 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
             : FlashMode.off;
     await s.controller.setFlashMode(next);
     emit(s.copyWith(flashMode: next));
+  }
+
+  Future<void> _onTakePicture(
+    TakePicture event,
+    Emitter<CameraState> emit,
+  ) async {
+    if (state is! CameraReady) return;
+    final s = state as CameraReady;
+    final file = await s.controller.takePicture();
+    event.onPictureTaken(File(file.path));
   }
 
   Future<void> _setupController(
