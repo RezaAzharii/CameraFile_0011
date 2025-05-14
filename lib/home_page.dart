@@ -16,6 +16,12 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   File? _imageFile;
 
+  Future<void> _requestPermission() async {
+    await Permission.camera.request();
+    await Permission.storage.request();
+    await Permission.manageExternalStorage.request();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold();
