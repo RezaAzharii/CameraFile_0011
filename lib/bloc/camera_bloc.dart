@@ -25,6 +25,7 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
     on<OpenCameraAndCapture>(_onOpenCamera);
     on<DeleteImage>(_onDeleteImage);
     on<ClearSnackbar>(_onClearSnackbar);
+    on<RequestPermissions>(_onRequestPermissions);
   }
 
   Future<void> _onInit(
@@ -172,5 +173,37 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
         snackbarMessage: null,
       ),
     );
+  }
+
+  @override
+  Future<void> close() async {
+    if (state is CameraReady) {
+      await (state as CameraReady).controller.dispose();
+    }
+    return super.close();
+  }
+
+  Future<void> _onRequestPermissions(
+    RequestPermissions event,
+    Emitter<CameraState> emit,
+  ) async {
+    final statuses =
+        await [
+          Permission.camera,
+          Permission.storage,
+          Permission.manageExternalStorage,
+        ].request();
+
+    final denied = statuses.entries.where((e) => !e.value.isGranted).toList();
+
+    if (denied.isNotEmpty) {
+      if (state is CameraReady) {
+        emit(
+          (state as CameraReady).copyWith(
+            snackbarMessage: 'Izin kamera atau penyimpanan ditolak.',
+          ),
+        );
+      }
+    }
   }
 }
