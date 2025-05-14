@@ -20,6 +20,7 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
     on<SwitchCamera>(_onSwitch);
     on<ToggleFlash>(_onToggleFlash);
     on<TakePicture>(_onTakePicture);
+    on<TapToFocus>(_onTapFocus);
   }
 
   Future<void> _onInit(
@@ -62,6 +63,17 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
     final s = state as CameraReady;
     final file = await s.controller.takePicture();
     event.onPictureTaken(File(file.path));
+  }
+
+  Future<void> _onTapFocus(TapToFocus event, Emitter<CameraState> emit) async {
+    if (state is! CameraReady) return;
+    final s = state as CameraReady;
+    final relative = Offset(
+      event.position.dx / event.previewSize.width,
+      event.position.dy / event.previewSize.height,
+    );
+    await s.controller.setFocusPoint(relative);
+    await s.controller.setExposurePoint(relative);
   }
 
   Future<void> _setupController(
