@@ -69,6 +69,17 @@ class _CameraPageState extends State<CameraPage> {
     await _setupCamera(nextIndex);
   }
 
+  void _toggleFlash() async {
+    FlashMode next =
+        _flashMode == FlashMode.off
+            ? FlashMode.auto
+            : _flashMode == FlashMode.auto
+            ? FlashMode.always
+            : FlashMode.off;
+    await _controller!.setFlashMode(next);
+    setState(() => _flashMode = next);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold();
